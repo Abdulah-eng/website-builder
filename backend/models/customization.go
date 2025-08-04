@@ -181,6 +181,25 @@ const (
 	ComponentTypeForm   ComponentType = "form"
 	ComponentTypeList   ComponentType = "list"
 	ComponentTypeCard   ComponentType = "card"
+	
+	// Store Builder Component Types
+	ComponentTypeHeroBanner        ComponentType = "hero-banner"
+	ComponentTypeHeroSplit         ComponentType = "hero-split"
+	ComponentTypeHeroVideo         ComponentType = "hero-video"
+	ComponentTypeHeroMinimal       ComponentType = "hero-minimal"
+	ComponentTypeProductGrid       ComponentType = "product-grid"
+	ComponentTypeProductCarousel   ComponentType = "product-carousel"
+	ComponentTypeProductShowcase   ComponentType = "product-showcase"
+	ComponentTypeProductCategories ComponentType = "product-categories"
+	ComponentTypeImageGallery      ComponentType = "image-gallery"
+	ComponentTypeVideoEmbed        ComponentType = "video-embed"
+	ComponentTypeFeatureList       ComponentType = "feature-list"
+	ComponentTypeTestimonials      ComponentType = "testimonials"
+	ComponentTypeCtaBanner         ComponentType = "cta-banner"
+	ComponentTypeNewsletter        ComponentType = "newsletter"
+	ComponentTypeContactInfo       ComponentType = "contact-info"
+	ComponentTypeAboutSection      ComponentType = "about-section"
+	ComponentTypeImageText         ComponentType = "image-text"
 )
 
 type ComponentConfig map[string]interface{}

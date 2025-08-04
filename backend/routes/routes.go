@@ -31,6 +31,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 
 		// Public store access
 		public.GET("/stores/:slug", storeController.GetStoreBySlug)
+		public.GET("/stores/:slug/layout", customizationController.GetPublicStoreLayout)
 		public.GET("/stores/:slug/products", productController.GetStoreProducts)
 		public.GET("/stores/:slug/products/:productSlug", productController.GetStoreProduct)
 		public.GET("/stores/:slug/pages", customizationController.GetStorePages)
@@ -72,8 +73,12 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 			storeRoutes.GET("/:id/theme", customizationController.GetStoreTheme)
 			storeRoutes.PUT("/:id/theme", customizationController.UpdateStoreTheme)
 
+			// Store layout
+			storeRoutes.GET("/:id/layout", customizationController.GetStoreLayout)
+			storeRoutes.POST("/:id/layout", customizationController.SaveStoreLayout)
+
 			// Store pages
-			storeRoutes.GET("/:id/pages", customizationController.GetStorePages)
+			storeRoutes.GET("/:id/pages", customizationController.GetPages)
 			storeRoutes.POST("/:id/pages", customizationController.CreatePage)
 			storeRoutes.PUT("/:id/pages/:pageId", customizationController.UpdatePage)
 			storeRoutes.DELETE("/:id/pages/:pageId", customizationController.DeletePage)
