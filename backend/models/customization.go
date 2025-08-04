@@ -181,7 +181,7 @@ const (
 	ComponentTypeForm   ComponentType = "form"
 	ComponentTypeList   ComponentType = "list"
 	ComponentTypeCard   ComponentType = "card"
-	
+
 	// Store Builder Component Types
 	ComponentTypeHeroBanner        ComponentType = "hero-banner"
 	ComponentTypeHeroSplit         ComponentType = "hero-split"
@@ -200,6 +200,11 @@ const (
 	ComponentTypeContactInfo       ComponentType = "contact-info"
 	ComponentTypeAboutSection      ComponentType = "about-section"
 	ComponentTypeImageText         ComponentType = "image-text"
+	ComponentTypeReviewsGrid       ComponentType = "reviews-grid"
+	ComponentTypeSocialProof       ComponentType = "social-proof"
+	ComponentTypeIconGrid          ComponentType = "icon-grid"
+	ComponentTypeBeforeAfter       ComponentType = "before-after"
+	ComponentTypeStatsCounter      ComponentType = "stats-counter"
 )
 
 type ComponentConfig map[string]interface{}

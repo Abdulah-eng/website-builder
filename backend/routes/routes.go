@@ -17,6 +17,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	productController := controllers.NewProductController(db)
 	orderController := controllers.NewOrderController(db)
 	customizationController := controllers.NewCustomizationController(db)
+	newsletterController := controllers.NewNewsletterController(db)
 
 	// API v1 routes
 	v1 := router.Group("/api/v1")
@@ -44,6 +45,10 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 		// Public orders (for guests)
 		public.POST("/stores/:slug/orders", orderController.CreateOrder)
 		public.GET("/orders/:orderNumber", orderController.GetOrderByNumber)
+
+		// Newsletter subscriptions
+		public.POST("/stores/:slug/newsletter/subscribe", newsletterController.Subscribe)
+		public.GET("/stores/:slug/newsletter/unsubscribe", newsletterController.Unsubscribe)
 	}
 
 	// Protected routes (require authentication)
@@ -95,6 +100,10 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 
 			// Store analytics
 			storeRoutes.GET("/:id/analytics", storeController.GetStoreAnalytics)
+
+			// Newsletter management
+			storeRoutes.GET("/:id/newsletter/subscriptions", newsletterController.GetSubscriptions)
+			storeRoutes.DELETE("/:id/newsletter/subscriptions/:subscriptionId", newsletterController.DeleteSubscription)
 		}
 	}
 

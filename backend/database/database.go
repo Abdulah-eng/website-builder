@@ -38,6 +38,7 @@ func RunMigrations(db *gorm.DB) error {
 		&models.Page{},
 		&models.Section{},
 		&models.Component{},
+		&models.NewsletterSubscription{},
 	)
 
 	if err != nil {
