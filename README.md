@@ -1,207 +1,373 @@
-# StoreMaker - Ecommerce Store Builder Platform
+# 🛍️ E-Commerce Platform
 
-A comprehensive ecommerce platform similar to Shopify that allows users to create and customize their online stores with AI-powered features.
+A full-stack e-commerce platform built with **Next.js** (frontend) and **Go/Gin** (backend), featuring AI-powered store creation, drag-and-drop website builder, and comprehensive admin panel.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-Before running the application, make sure you have:
+- **Node.js** (v18 or higher)
+- **Go** (v1.21 or higher)
+- **PostgreSQL** (v13 or higher)
+- **Git**
 
-- **Go 1.21+** installed
-- **Node.js 18+** and npm installed
-- **PostgreSQL 12+** installed and running
-- **Git** installed
-
-### 1. Clone & Setup
+### 1. Clone the Repository
 
 ```bash
-git clone <your-repo-url>
-cd storemaker
+git clone <repository-url>
+cd abdo
 ```
 
-### 2. Database Setup
+### 2. Backend Setup
 
-1. **Install PostgreSQL** if not already installed
-2. **Create a database**:
-   ```sql
-   CREATE DATABASE storemaker;
-   CREATE USER postgres WITH PASSWORD 'password';
-   GRANT ALL PRIVILEGES ON DATABASE storemaker TO postgres;
-   ```
-
-### 3. Backend Setup
-
+#### Install Go Dependencies
 ```bash
-# Navigate to backend directory
 cd backend
+go mod download
+```
 
-# Install dependencies
-go mod tidy
+#### Database Setup
+1. **Create PostgreSQL Database:**
+```sql
+CREATE DATABASE storemaker;
+CREATE USER storemaker_user WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE storemaker TO storemaker_user;
+```
 
-# Create environment file
-copy config.env.example .env
-# Or on Linux/Mac: cp config.env.example .env
+2. **Configure Environment Variables:**
+```bash
+# Create .env file in backend directory
+cp .env.example .env
+```
 
-# Edit .env file with your database credentials
-# DATABASE_URL=postgres://postgres:password@localhost:5432/storemaker?sslmode=disable
+Edit `backend/.env`:
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=storemaker_user
+DB_PASSWORD=your_password
+DB_NAME=storemaker
+DB_SSL_MODE=disable
 
-# Run the backend server
+JWT_SECRET=your_jwt_secret_key_here
+GEMINI_API_KEY=AIzaSyDJ_qhYqnP3C5T0bVpqG1O3vFFz3jydiOs
+
+PORT=8080
+CORS_ORIGIN=http://localhost:3000
+```
+
+#### Run Database Migrations
+```bash
 go run cmd/main.go
 ```
 
-The backend will start on `http://localhost:8080`
-
-### 4. Frontend Setup
-
-Open a new terminal window:
-
+#### Seed Sample Data (Optional)
 ```bash
-# Navigate to frontend directory
-cd frontend
+# Seed templates
+go run cmd/seed/seed-templates.go
 
-# Install dependencies
+# Seed products
+go run cmd/seed/seed-products.go
+```
+
+#### Start Backend Server
+```bash
+go run cmd/main.go
+```
+
+Backend will be running at: **http://localhost:8080**
+
+### 3. Frontend Setup
+
+#### Install Node.js Dependencies
+```bash
+cd frontend
 npm install
+```
 
-# Create environment file (optional)
-# Create .env.local and add:
-# NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
+#### Configure Environment Variables
+```bash
+# Create .env.local file in frontend directory
+cp .env.example .env.local
+```
 
-# Run the frontend development server
+Edit `frontend/.env.local`:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+#### Start Frontend Development Server
+```bash
 npm run dev
 ```
 
-The frontend will start on `http://localhost:3000`
+Frontend will be running at: **http://localhost:3000**
 
-## 🏗️ Architecture
+## 📁 Project Structure
 
-### Backend (Go)
-- **Framework**: Gin
-- **Database**: PostgreSQL with GORM
-- **Authentication**: JWT tokens
-- **API**: RESTful endpoints
+```
+abdo/
+├── backend/                 # Go/Gin Backend
+│   ├── cmd/
+│   │   ├── main.go         # Main application entry
+│   │   └── seed/           # Database seeding scripts
+│   ├── controllers/        # API controllers
+│   ├── models/            # Database models
+│   ├── routes/            # API routes
+│   ├── database/          # Database configuration
+│   ├── middleware/        # Custom middleware
+│   └── utils/             # Utility functions
+├── frontend/              # Next.js Frontend
+│   ├── src/
+│   │   ├── app/           # App router pages
+│   │   ├── components/    # React components
+│   │   ├── contexts/      # React contexts
+│   │   ├── lib/           # Utility libraries
+│   │   └── styles/        # CSS styles
+│   └── public/            # Static assets
+└── README.md
+```
 
-### Frontend (Next.js)
-- **Framework**: Next.js 15 (App Router)
-- **Styling**: Tailwind CSS
-- **Language**: TypeScript
-- **State Management**: React hooks
+## 🔧 Available Scripts
 
-## 📱 Features
-
-- **User Authentication** (Login/Register)
-- **Role-based Access** (Admin, Merchant, Customer)
-- **Store Creation & Management**
-- **Template System**
-- **Product Management**
-- **Order Processing**
-- **Dark Theme Support**
-- **Responsive Design**
-
-## 🔧 Development
-
-### Backend Development
+### Backend Scripts
 ```bash
 cd backend
+
+# Run development server
 go run cmd/main.go
+
+# Run with hot reload (requires air)
+air
+
+# Run tests
+go test ./...
+
+# Build for production
+go build -o bin/server cmd/main.go
 ```
 
-### Frontend Development
+### Frontend Scripts
 ```bash
 cd frontend
-npm run dev
-```
 
-### Database Migrations
-The backend automatically runs migrations on startup.
+# Development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+
+# Run tests
+npm test
+
+# Lint code
+npm run lint
+
+# Type check
+npm run type-check
+```
 
 ## 🌐 API Endpoints
 
 ### Authentication
 - `POST /api/v1/auth/register` - User registration
 - `POST /api/v1/auth/login` - User login
-- `POST /api/v1/auth/refresh` - Refresh token
+- `POST /api/v1/auth/logout` - User logout
 
 ### Stores
-- `GET /api/v1/stores` - Get user stores
-- `POST /api/v1/stores` - Create store
-- `GET /api/v1/stores/:id` - Get store details
-- `PUT /api/v1/stores/:id` - Update store
+- `GET /api/v1/manage/stores` - Get user stores
+- `POST /api/v1/manage/stores` - Create store
+- `POST /api/v1/manage/stores/ai` - Create AI-powered store
+- `GET /api/v1/stores/:slug` - Get public store
+- `PUT /api/v1/manage/stores/:id` - Update store
 
-### Templates
-- `GET /api/v1/templates` - Get public templates
-- `GET /api/v1/templates/:id` - Get template details
+### Store Builder
+- `GET /api/v1/manage/stores/:id/layout` - Get store layout
+- `PUT /api/v1/manage/stores/:id/layout` - Update store layout
 
 ### Products
-- `GET /api/v1/stores/:id/products` - Get store products
-- `POST /api/v1/stores/:id/products` - Create product
+- `GET /api/v1/manage/stores/:id/products` - Get store products
+- `POST /api/v1/manage/stores/:id/products` - Create product
+- `PUT /api/v1/manage/stores/:id/products/:productId` - Update product
+- `DELETE /api/v1/manage/stores/:id/products/:productId` - Delete product
 
-## 🎨 UI/UX
+### Templates
+- `GET /api/v1/manage/templates` - Get templates
+- `POST /api/v1/manage/templates` - Create template
+- `PUT /api/v1/manage/templates/:id` - Update template
+- `DELETE /api/v1/manage/templates/:id` - Delete template
 
-- **Modern Dark Theme** as primary
-- **Minimal Gradients** for elegant design
-- **Clean Typography** using Inter font
-- **Responsive Layout** for all devices
-- **Smooth Animations** and transitions
+### Newsletter
+- `POST /api/v1/stores/:slug/newsletter/subscribe` - Subscribe to newsletter
+- `POST /api/v1/stores/:slug/newsletter/unsubscribe` - Unsubscribe from newsletter
 
-## 🔐 Environment Variables
+## 👤 Default Admin Credentials
 
-### Backend (.env)
-```env
-DATABASE_URL=postgres://postgres:password@localhost:5432/storemaker?sslmode=disable
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-PORT=8080
-ENVIRONMENT=development
+```
+Email: admin@storemaker.com
+Password: admin123
 ```
 
-### Frontend (.env.local) - Optional
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
-```
+## 🛠️ Development
 
-## 🚦 Testing
+### Backend Development
 
-Access the application:
-1. Open `http://localhost:3000` for the frontend
-2. Backend API is available at `http://localhost:8080`
-3. Health check: `http://localhost:8080/health`
+1. **Database Migrations:**
+   - GORM AutoMigrate handles schema changes automatically
+   - Check `database/database.go` for migration configuration
 
-## 📝 Next Steps
+2. **API Development:**
+   - Controllers in `controllers/` directory
+   - Models in `models/` directory
+   - Routes in `routes/routes.go`
 
-1. Set up PostgreSQL database
-2. Configure environment variables
-3. Run both backend and frontend
-4. Test user registration/login
-5. Explore the dashboard features
+3. **Testing:**
+   ```bash
+   go test ./controllers
+   go test ./models
+   ```
 
-## 🐛 Troubleshooting
+### Frontend Development
+
+1. **Component Development:**
+   - Store builder components in `components/store-builder/`
+   - UI components in `components/ui/`
+   - Page components in `app/` directory
+
+2. **State Management:**
+   - Cart context in `contexts/CartContext.tsx`
+   - API client in `lib/api.ts`
+
+3. **Styling:**
+   - Tailwind CSS for styling
+   - Custom components in `components/ui/`
+
+## 🚀 Deployment
+
+### Backend Deployment
+
+1. **Build the application:**
+   ```bash
+   cd backend
+   go build -o bin/server cmd/main.go
+   ```
+
+2. **Set production environment variables:**
+   ```env
+   DB_HOST=your_db_host
+   DB_PORT=5432
+   DB_USER=your_db_user
+   DB_PASSWORD=your_db_password
+   DB_NAME=your_db_name
+   JWT_SECRET=your_production_jwt_secret
+   PORT=8080
+   ```
+
+3. **Run the server:**
+   ```bash
+   ./bin/server
+   ```
+
+### Frontend Deployment
+
+1. **Build for production:**
+   ```bash
+   cd frontend
+   npm run build
+   ```
+
+2. **Set production environment variables:**
+   ```env
+   NEXT_PUBLIC_API_URL=https://your-api-domain.com/api/v1
+   NEXT_PUBLIC_APP_URL=https://your-frontend-domain.com
+   ```
+
+3. **Deploy to your hosting platform (Vercel, Netlify, etc.)**
+
+## 🔍 Troubleshooting
 
 ### Common Issues
 
-1. **Database Connection Error**
-   - Ensure PostgreSQL is running
-   - Check database credentials in .env
+1. **Database Connection Error:**
+   - Verify PostgreSQL is running
+   - Check database credentials in `.env`
+   - Ensure database exists
 
-2. **Frontend Build Errors**
-   - Run `npm install` to ensure all dependencies are installed
-   - Check Node.js version (requires 18+)
+2. **Port Already in Use:**
+   - Change port in `.env` file
+   - Kill existing processes using the port
 
-3. **Backend Compilation Errors**
-   - Run `go mod tidy` to resolve dependencies
-   - Ensure Go version 1.21+
+3. **CORS Errors:**
+   - Verify `CORS_ORIGIN` in backend `.env`
+   - Check frontend API URL configuration
 
-4. **CORS Issues**
-   - Backend is configured for `http://localhost:3000`
-   - Update CORS settings if using different ports
+4. **JWT Token Issues:**
+   - Ensure `JWT_SECRET` is set in backend `.env`
+   - Clear browser localStorage if needed
+
+5. **AI Store Creation Fails:**
+   - Verify `GEMINI_API_KEY` is set
+   - Check internet connection
+   - Review API response in browser console
+
+### Debug Mode
+
+**Backend Debug:**
+```bash
+cd backend
+go run cmd/main.go -debug
+```
+
+**Frontend Debug:**
+```bash
+cd frontend
+DEBUG=* npm run dev
+```
+
+## 📝 Environment Variables Reference
+
+### Backend (.env)
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DB_HOST` | Database host | localhost |
+| `DB_PORT` | Database port | 5432 |
+| `DB_USER` | Database user | - |
+| `DB_PASSWORD` | Database password | - |
+| `DB_NAME` | Database name | - |
+| `JWT_SECRET` | JWT signing secret | - |
+| `GEMINI_API_KEY` | Google AI API key | - |
+| `PORT` | Server port | 8080 |
+| `CORS_ORIGIN` | Allowed CORS origin | http://localhost:3000 |
+
+### Frontend (.env.local)
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `NEXT_PUBLIC_API_URL` | Backend API URL | http://localhost:8080/api/v1 |
+| `NEXT_PUBLIC_APP_URL` | Frontend app URL | http://localhost:3000 |
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Test thoroughly
+4. Add tests if applicable
 5. Submit a pull request
 
 ## 📄 License
 
 This project is licensed under the MIT License.
+
+## 🆘 Support
+
+For support and questions:
+- Create an issue in the repository
+- Check the troubleshooting section above
+- Review the API documentation
+
+---
+
+**Happy coding! 🎉**"# website-builder" 
