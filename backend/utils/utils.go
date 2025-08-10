@@ -96,6 +96,14 @@ func ValidateEmail(email string) bool {
 	return emailRegex.MatchString(email)
 }
 
+// GetEnv gets an environment variable with a default value
+func GetEnv(key, defaultValue string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return defaultValue
+}
+
 // ValidatePassword validates password requirements
 func ValidatePassword(password string) error {
 	if len(password) < 6 {

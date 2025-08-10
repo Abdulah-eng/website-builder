@@ -44,6 +44,17 @@ func (ctrl *CustomizationController) GetStoreLayout(c *gin.Context) {
 		return
 	}
 
+	// Check if store exists
+	var store models.Store
+	if err := ctrl.db.First(&store, storeID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Store not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch store"})
+		}
+		return
+	}
+
 	// Get home page for this store
 	var homePage models.Page
 	if err := ctrl.db.Where("store_id = ? AND type = ?", storeID, models.PageTypeHome).
@@ -368,6 +379,47 @@ func (ctrl *CustomizationController) GetStorePage(c *gin.Context) {
 	var page models.Page
 	if err := ctrl.db.Where("store_id = ? AND slug = ? AND is_published = ?", store.ID, pageSlug, true).
 		Preload("Sections.Components").First(&page).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Page not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, page)
+}
+
+func (ctrl *CustomizationController) GetPublicStorePages(c *gin.Context) {
+	storeSlug := c.Param("slug")
+
+	var store models.Store
+	if err := ctrl.db.Where("slug = ?", storeSlug).First(&store).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Store not found"})
+		return
+	}
+
+	var pages []models.Page
+	if err := ctrl.db.Where("store_id = ? AND is_published = ?", store.ID, true).
+		Preload("Sections.Components").
+		Find(&pages).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch pages"})
+		return
+	}
+
+	c.JSON(http.StatusOK, pages)
+}
+
+func (ctrl *CustomizationController) GetPublicStorePage(c *gin.Context) {
+	storeSlug := c.Param("slug")
+	pageSlug := c.Param("pageSlug")
+
+	var store models.Store
+	if err := ctrl.db.Where("slug = ?", storeSlug).First(&store).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Store not found"})
+		return
+	}
+
+	var page models.Page
+	if err := ctrl.db.Where("store_id = ? AND slug = ? AND is_published = ?", store.ID, pageSlug, true).
+		Preload("Sections.Components").
+		First(&page).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Page not found"})
 		return
 	}
